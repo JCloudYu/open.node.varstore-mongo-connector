@@ -1,0 +1,21 @@
+{
+	"name": "varstore-mongodb-connector",
+	"version": "0.1.0",
+	"description": "A mongob connector for varstore library",
+	"main": "./_dist/connector.js",
+	"scripts": {
+		"prebuild": "rm -rf ./_dist",
+		"build": "tsc"
+	},
+	"keywords": [
+		"Variable Storage",
+		"Storage"
+	],
+	"author": "JCloudYu",
+	"license": "ISC",
+	"dependencies": {
+		"@types/mongodb": "^3.6.20",
+		"mongodb": "^3.7.3",
+		"varstore": "^0.1.1"
+	}
+}
