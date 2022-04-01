@@ -47,7 +47,7 @@ var MongoConnector = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!conn_info.connection) return [3 /*break*/, 1];
+                        if (!(conn_info.connection !== undefined)) return [3 /*break*/, 1];
                         connection = conn_info.connection;
                         return [3 /*break*/, 3];
                     case 1:

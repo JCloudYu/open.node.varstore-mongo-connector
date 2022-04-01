@@ -1,7 +1,11 @@
 import type {IStorageConnect, StoredTypes, AllowedInputTypes} from "varstore";
 import mongodb = require("mongodb");
 
-type InitOptions = { connection:mongodb.MongoClient; uri:string; db?:string; collection:string; };
+
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type CommonOptions = { db?:string; collection:string; }
+type InitOptions = XOR<{connection:mongodb.MongoClient}&CommonOptions, {uri:string}&CommonOptions>;
 type VarRecord<ValueType> = {name:string; value:ValueType;}
 type MongoConnectorPrivate = {conn:mongodb.MongoClient; db:mongodb.Db; coll_name:string;};
 
@@ -11,7 +15,7 @@ class MongoConnector implements IStorageConnect {
 	static async init(conn_info:InitOptions):Promise<MongoConnector> {
 		let connection:mongodb.MongoClient;
 		
-		if ( conn_info.connection ) {
+		if ( conn_info.connection !== undefined ) {
 			connection = conn_info.connection;
 		}
 		else {
