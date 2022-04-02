@@ -38,8 +38,6 @@ class MongoConnector implements IStorageConnect {
 		return instance;
 	}
 	async list():Promise<string[]> {
-		CheckConn(this);
-
 		const {db, coll_name} = _MongoConnector.get(this)!;
 		const [result] = await db.collection(coll_name).aggregate<{names:string[]}>([
 			{$sort:{name:1}},
@@ -50,8 +48,6 @@ class MongoConnector implements IStorageConnect {
 		return result ? result.names : [];
 	}
 	async get<ReturnType extends StoredTypes>(name:string):Promise<ReturnType|undefined> {
-		CheckConn(this);
-		
 		const {db, coll_name} = _MongoConnector.get(this)!;
 		const [data] = await db.collection<VarRecord<StoredTypes>>(coll_name).find({name}).toArray();
 		if ( !data ) return undefined;
@@ -62,8 +58,6 @@ class MongoConnector implements IStorageConnect {
 		return data.value as unknown as ReturnType;
 	}
 	async set<ValueType extends AllowedInputTypes>(name:string, value:ValueType):Promise<boolean> {
-		CheckConn(this);
-
 		const {db, coll_name} = _MongoConnector.get(this)!;
 		if ( Buffer.isBuffer(value) || value instanceof ArrayBuffer ) {
 			value = Buffer.from(value) as unknown as ValueType;
@@ -77,24 +71,11 @@ class MongoConnector implements IStorageConnect {
 		return (result.upsertedCount + result.matchedCount) > 0;
 	}
 	async del<ReturnType extends StoredTypes>(name:string):Promise<ReturnType|undefined> {
-		CheckConn(this);
-		
 		const {db, coll_name} = _MongoConnector.get(this)!;
 		const {value} = await db.collection(coll_name).findOneAndDelete({name});
 		if ( value === null ) return undefined;
 		
 		return value.value;
-	}
-	async release() {
-		const {conn} = _MongoConnector.get(this)!;
-		return conn.close();
-	}
-}
-
-function CheckConn(inst:MongoConnector) {
-	const {conn} = _MongoConnector.get(inst)!;
-	if ( !conn.isConnected() ) {
-		throw new Error("Database connection has been lost!");
 	}
 }
 

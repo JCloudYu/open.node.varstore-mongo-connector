@@ -19,6 +19,5 @@ declare class MongoConnector implements IStorageConnect {
     get<ReturnType extends StoredTypes>(name: string): Promise<ReturnType | undefined>;
     set<ValueType extends AllowedInputTypes>(name: string, value: ValueType): Promise<boolean>;
     del<ReturnType extends StoredTypes>(name: string): Promise<ReturnType | undefined>;
-    release(): Promise<void>;
 }
 export default MongoConnector;

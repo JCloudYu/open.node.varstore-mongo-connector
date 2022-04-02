@@ -78,7 +78,6 @@ var MongoConnector = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        CheckConn(this);
                         _a = _MongoConnector.get(this), db = _a.db, coll_name = _a.coll_name;
                         return [4 /*yield*/, db.collection(coll_name).aggregate([
                                 { $sort: { name: 1 } },
@@ -98,7 +97,6 @@ var MongoConnector = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        CheckConn(this);
                         _a = _MongoConnector.get(this), db = _a.db, coll_name = _a.coll_name;
                         return [4 /*yield*/, db.collection(coll_name).find({ name: name }).toArray()];
                     case 1:
@@ -119,7 +117,6 @@ var MongoConnector = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        CheckConn(this);
                         _a = _MongoConnector.get(this), db = _a.db, coll_name = _a.coll_name;
                         if (Buffer.isBuffer(value) || value instanceof ArrayBuffer) {
                             value = Buffer.from(value);
@@ -141,7 +138,6 @@ var MongoConnector = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        CheckConn(this);
                         _a = _MongoConnector.get(this), db = _a.db, coll_name = _a.coll_name;
                         return [4 /*yield*/, db.collection(coll_name).findOneAndDelete({ name: name })];
                     case 1:
@@ -153,21 +149,6 @@ var MongoConnector = /** @class */ (function () {
             });
         });
     };
-    MongoConnector.prototype.release = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn;
-            return __generator(this, function (_a) {
-                conn = _MongoConnector.get(this).conn;
-                return [2 /*return*/, conn.close()];
-            });
-        });
-    };
     return MongoConnector;
 }());
-function CheckConn(inst) {
-    var conn = _MongoConnector.get(inst).conn;
-    if (!conn.isConnected()) {
-        throw new Error("Database connection has been lost!");
-    }
-}
 exports.default = MongoConnector;
