@@ -16,9 +16,9 @@ declare type InitOptions = XOR<{
 declare class MongoConnector implements IStorageConnect {
     static init(conn_info: InitOptions): Promise<MongoConnector>;
     list(): Promise<string[]>;
-    get(name: string): Promise<StoredTypes | undefined>;
-    set(name: string, value: AllowedInputTypes): Promise<boolean>;
-    del(name: string): Promise<StoredTypes | undefined>;
+    get<ReturnType extends StoredTypes>(name: string): Promise<ReturnType | undefined>;
+    set<ValueType extends AllowedInputTypes>(name: string, value: ValueType): Promise<boolean>;
+    del<ReturnType extends StoredTypes>(name: string): Promise<ReturnType | undefined>;
     release(): Promise<void>;
 }
 export default MongoConnector;

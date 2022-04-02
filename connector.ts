@@ -49,33 +49,34 @@ class MongoConnector implements IStorageConnect {
 
 		return result ? result.names : [];
 	}
-	async get(name:string):Promise<StoredTypes|undefined> {
+	async get<ReturnType extends StoredTypes>(name:string):Promise<ReturnType|undefined> {
 		CheckConn(this);
 		
 		const {db, coll_name} = _MongoConnector.get(this)!;
 		const [data] = await db.collection<VarRecord<StoredTypes>>(coll_name).find({name}).toArray();
 		if ( !data ) return undefined;
+
 		if ( data.value instanceof mongodb.Binary ) {
-			return data.value.buffer;
+			return Buffer.from(data.value.buffer) as unknown as ReturnType;
 		}
-		return data.value;
+		return data.value as unknown as ReturnType;
 	}
-	async set(name:string, value:AllowedInputTypes):Promise<boolean> {
+	async set<ValueType extends AllowedInputTypes>(name:string, value:ValueType):Promise<boolean> {
 		CheckConn(this);
 
 		const {db, coll_name} = _MongoConnector.get(this)!;
 		if ( Buffer.isBuffer(value) || value instanceof ArrayBuffer ) {
-			value = Buffer.from(value);
+			value = Buffer.from(value) as unknown as ValueType;
 		}
 		else
 		if ( ArrayBuffer.isView(value) ) {
-			value = Buffer.from(value.buffer);
+			value = Buffer.from(value.buffer) as unknown as ValueType;
 		}
 
 		const result = await db.collection(coll_name).updateOne({name}, {$set:{value}, $setOnInsert:{name}}, {upsert:true});
 		return (result.upsertedCount + result.matchedCount) > 0;
 	}
-	async del(name:string):Promise<StoredTypes|undefined> {
+	async del<ReturnType extends StoredTypes>(name:string):Promise<ReturnType|undefined> {
 		CheckConn(this);
 		
 		const {db, coll_name} = _MongoConnector.get(this)!;

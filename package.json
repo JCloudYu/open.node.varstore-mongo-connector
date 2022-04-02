@@ -1,6 +1,6 @@
 {
 	"name": "varstore-mongodb-connector",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "A mongob connector for varstore library",
 	"main": "./_dist/connector.js",
 	"scripts": {

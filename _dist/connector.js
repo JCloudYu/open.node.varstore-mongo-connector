@@ -106,7 +106,7 @@ var MongoConnector = /** @class */ (function () {
                         if (!data)
                             return [2 /*return*/, undefined];
                         if (data.value instanceof mongodb.Binary) {
-                            return [2 /*return*/, data.value.buffer];
+                            return [2 /*return*/, Buffer.from(data.value.buffer)];
                         }
                         return [2 /*return*/, data.value];
                 }
